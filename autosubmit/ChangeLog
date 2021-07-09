@@ -1,0 +1,1742 @@
+2017-04-04 Lars Buntemeyer <lars.buntemeyer@hzg.de>
+	Added all dynamics modules and two tracer fields.
+	TRAC1 and TRAC2 and two source fields TR1SOURCE and TR2SOURCE.
+	progexp was converted to fortran90 standard.
+
+	Added:
+
+	* mo_dynamics.f90
+	* mo_memory_dynamics.f90
+	* progexp.f90
+
+2017-03-27 Lars Buntemeyer <lars.buntemeyer@hzg.de>
+	Added all memory modules for dynamica allocation and
+	new netcdf IO. For more details, please look at the
+	user guide and README. param.h has been replaced by
+	mo_param.
+
+	Added:
+
+	* mo_*
+	* control.f90
+	* init_remo.f90 timeloop.f90 finish_remo.f90
+	* io_initial.f90 io_restart.f90
+
+2017-03-09 Lars Buntemeyer <lars.buntemeyer@hzg.de>
+	Added REMO documentation as git submodule
+
+	Modified:
+
+	* ./doc
+
+2016-11-11 Lars Buntemeyer <lars.buntemeyer@hzg.de>
+	Dynamic memory allocation in mo_sumfel.f:
+	Fields for accumulation of min/max and mean values are
+	dynamically allocated during runtime so that only memory
+	Dynamic memory allocation in mo_sumfel.f:
+	Fields for accumulation of min/max and mean values are
+	dynamically allocated during runtime so that only memory
+	for requested fields is allocated. Furthermore, min/max and mean
+	computations are now done in parallel before communication, 
+	allocation of global fields is vastly reduced for the mpi master.
+
+	Modified:
+
+	* mo_sumfel.f
+	* writegb.f
+	* tagmit.f
+	* monmit.f
+
+2016-11-10  Kevin Sieck <kevin.sieck@hzg.de>
+
+	Renamed some autosubmit scripts to achieve a better naming.
+	Added postprocessing script.
+
+	Modified:
+
+	* autosubmit/conf/jobs_xxxx.conf
+        * autosubmit/conf/proj_xxxx.conf
+	* autosubmit/jobs/member_setup.py
+	* autosubmit/jobs/remote_setup.sh
+
+        Deleted:
+
+	* autosubmit/jobs/local_setup.sh
+
+        Added:
+
+	* autosubmit/jobs/model_setup.sh
+        * autosubmit/jobs/postprocess.sh
+
+2016-11-09  Kevin Sieck <kevin.sieck@hzg.de>
+
+	Included boundary data download script for autosubmit.
+	Many little changes to autosubmit scripts.
+
+	Added:
+
+	* autosubmit/jobs/ret_forcing.sh
+
+	Modified:
+
+	* autosubmit/conf/proj_xxxx.conf
+        * autosubmit/jobs/local_setup.sh
+        * autosubmit/jobs/member_setup.py
+        * autosubmit/jobs/remote_setup.sh
+        * autosubmit/jobs/test_remo.sh
+
+2016-10-25  Kevin Sieck <kevin.sieck@hzg.de>
+
+	Added a new directory (autosubmit/..) that contains jobs and config
+	files that define a basic workflow to run REMO using autosubmit.
+
+	For now autosubmit needs some changes in the slurmplatform file. The
+	account and partition need to be added to the slurm header in order
+	to run on DKRZ computers.
+
+	Added files:
+
+	Needed for autosubmit:
+	* autosubmit/conf/proj_xxxx.conf
+	* autosubmit/conf/jobs_xxxx.conf
+
+	Basic configuration files for REMO Namelists:
+	* autosubmit/conf/eur011.conf
+	* autosubmit/conf/eur044.conf
+
+	Autosubmit job files:
+	* autosubmit/jobs/local_setup.sh
+	* autosubmit/jobs/remote_setup.sh
+	* autosubmit/jobs/member_setup.py
+	* autosubmit/jobs/test_remo.sh
+
+2016-07-20 Thomas Raub <thomas.raub@hzg.de>
+	Adjustments to support more than 49 levels for the netcdf version.
+
+	Modified:
+
+	* ecaprepnc.f90
+	* ecrprepnc.f90
+	* mo_netcdf.f90
+	* writenc.f90
+
+2016-07-19 Thomas Raub <thomas.raub@hzg.de>
+	Merged model_top branch into remo2011_nh_debug
+
+2016-06-28  Kevin Sieck <kevin.sieck@hzg.de>
+
+	Fixed a small bug which lead to chrashes when model top was not 0.0Pa.
+
+	* CODE/progexp.f
+	* CODE/ectied.f
+
+2016-06-24  Kevin Sieck <kevin.sieck@hzg.de>
+
+	Implemented a model top which can be different from 0.0 Pa.
+
+	Modified:
+
+	All routines that computed the pressure with ak, bk
+
+	Added:
+
+	* CODE/getp.f
+	* CODE/piber.f
+
+2016-06-10  Lars Buntemeyer <lars.buntemeyer@hzg.de>
+
+	Added netcdf support.
+	Moved all long-term data from ec4org.f to
+	the module EM_Data and EC4_Data.
+
+	Added:
+
+	* CODE/mo_io.f90
+	* CODE/mo_netcdf.f90
+	* CODE/ecaprepnc.f90
+	* CODE/ecrprepnc.f90
+	* CODE/makefile.io
+	* CODE/makefile.netcdf
+	* CODE/EM_Data.f90
+	* CODE/EC4_Data.f90
+
+2016-06-06  Kevin Sieck <kevin.sieck@hzg.de>
+
+	Introduced rayleigh damping for idealized hill tests with
+	switch LRAYDAMP. Default is .FALSE.
+
+	Modified:
+
+	* CODE/progec4.f
+	* CODE/medea.f
+	* CBS/mo_comdyn.f
+
+	Added:
+
+	* CODE/rayleigh.f
+
+2016-05-10  Kevin Sieck <kevin.sieck@hzg.de>
+
+	Changed the non-hydrostatic switch to calculate W also for the
+	hydrostatic case.
+
+	Modified:
+
+	* CODE/progec4.f
+	* CODE/cdzdt.f
+
+2016-05-09  Kevin Sieck <kevin.sieck@hzg.de>
+
+	Added makefile for eddy.
+
+2016-05-09  Kevin Sieck <kevin.sieck@hzg.de>
+
+	Fixed bug in call to progexp.
+	Extended the non-hydrostatic correction calculations to the boundaries
+	(JAHCOMP instead of JAH, etc.).
+	Implemented the divergence damping analog to WRF.
+	Introduced WR as boundary field for W.
+
+	Modified:
+
+	* CBS/mo_comdyn.f
+	* CODE/cdwdt.f
+        * CODE/cdwdt2.f
+        * CODE/cdzdt.f
+        * CODE/ec4inmi.f
+        * CODE/ec4org.f
+        * CODE/ecaprep.f
+        * CODE/ecrandup.f
+        * CODE/final.f
+        * CODE/gkonst.f
+        * CODE/medea.f
+        * CODE/progec4.f
+        * CODE/progexp.f
+        * jobs/test_remo_2d.ksh
+
+2016-04-04  Thomas Raub <thomas.raub@hzg.de>
+
+	Fixed bugs in adv.f (and adv_kev.f) which led to wrong sign and
+	amplitude of horizontal advection of height and vertical velocities.
+
+	Modified:
+
+	* CODE/adv.f
+	* CODE/adv_kev.f
+	* CODE/cdwdt.f
+	* CODE/cdzdt.f
+	* CODE/progec4.f
+
+2016-02-25  Kevin Sieck <kevin.sieck@hzg.de>
+
+	Implemented the the calculation of the 10m wind for lowest layers that
+	have a half smaller than 10m. In this case the 10m wind is interpolated
+	(linear) between the two lowest model layers.
+
+	* CODE/vdiff.f
+
+2016-01-20  Kevin Sieck <kevin.sieck@hzg.de>
+
+	Moved common parts of exchgcoeff_land.f and exchgcoeff_water.f to
+	subroutines.
+
+	Added:
+
+	* CODE/pbl_extension.f
+	* CODE/richardson.f
+
+	Modified:
+
+	* CODE/exchgcoeff_land.f
+	* CODE/exchgcoeff_water.f
+	* CODE/vdiff.f
+
+2016-01-20  Kevin Sieck <kevin.sieck@hzg.de>
+
+	Moved the calculation of surface specific humidity to subroutine.
+
+	Added:
+
+	* CODE/surfhum.f
+
+	Changed:
+
+	* CODE/vdiff.f
+
+2016-01-19  Kevin Sieck <kevin.sieck@hzg.de>
+
+	Moved the heat flux calculations to subroutines.
+	Harmonized the aggregation calculations in order to be able
+	to use the intrinsic SUM function.
+
+	IMPORTANT: Due to code re-arrangements for improved readability
+	the results produced with this version are not binary identical to
+	previous versions (even with -O0)!!!
+
+	Added:
+
+	* CODE/heatfl_land.f
+	* CODE/heatfl_water.f
+
+	Changed:
+
+	* CODE/iniphy.f
+	* CODE/vdiff.f
+	* CBS/MO_COMPH2.f
+
+2016-01-11  Kevin Sieck <kevin.sieck@hzg.de>
+
+	Changed many fraction accumulations to intrinsic SUM function.
+
+	* CODE/vdiff.f
+
+2016-01-11  Thomas Raub <thomas.raub@hzg.de>
+
+	Added feature of secondly output of t-files. It's triggered with
+	negative values of NHTAA and NHDTA.
+
+	* CBS/org.h
+	* CBS/corg.h
+	* CODE/ec4org.org
+	* CODE/medea.f
+	* CODE/datutc.f
+	* CODE/makepdb.f
+	* CODE/ec4org.sek
+	* CODE/remorg.f
+	* CODE/readaer.f
+	* CODE/reado3.f
+	* CODE/ec4org.f
+	* CODE/datchk.f
+	* CODE/makepn.f
+
+
+2015-12-17  Kevin Sieck <kevin.sieck@hzg.de>
+
+	Changed the calls to subroutines in vdiff to scalar value calls.
+
+	* CODE/exchgcoeff_land.f
+	* CODE/exchgcoeff_water.f
+	* CODE/temp2mber.f
+	* CODE/vdiff.f
+	* CODE/wind10ber.f
+
+2015-12-16  Kevin Sieck <kevin.sieck@hzg.de>
+
+	Changed the order in fractional fields for better vectorization.
+	Replaced the calculation of avaraged values with intrinsic sum
+	function.
+
+	* CODE/exchgcoeff_water.f
+	* CODE/phyec.f
+	* CODE/phyorg.f
+	* CODE/vdiff.f
+
+2015-12-15  Kevin Sieck <kevin.sieck@hzg.de>
+
+	Changed more fields in vdiff to new fractional land cover structure.
+
+	* CODE/vdiff.f
+
+2015-12-15  Kevin Sieck <kevin.sieck@hzg.de>
+
+	Moved many constants computed in vdiff to modules. Some are renamed
+	according to their purpose.
+
+	* CBS/MO_COMCON.f
+	* CBS/MO_COMPH2.f
+	* CODE/cemastr.f
+	* CODE/exchgcoeff_land.f
+	* CODE/exchgcoeff_water.f
+	* CODE/inicon.f
+	* CODE/iniphy.f
+	* CODE/surf.f
+	* CODE/temp2mber.f
+	* CODE/vdiff.f
+
+2015-12-14  Kevin Sieck <kevin.sieck@hzg.de>
+
+	Changed first fields in vdiff to new fractional land cover structure.
+	Introduced parameter NFRAC for the number of fractions to use.
+
+	* CODE/exchgcoeff_land.f
+	* CODE/exchgcoeff_water.f
+	* CODE/vdiff.f
+	* CODE/konst.f
+	* CBS/mo_faktinf.f
+
+2015-12-11  Kevin Sieck <kevin.sieck@hzg.de>
+
+	Moved computation of 2M temperature, dew point and 10M windspeed
+	to subroutines.
+
+	Added:
+
+	* CODE/wind10ber.f
+	* CODE/temp2mber.f
+
+	Changed:
+
+	* CODE/vdiff.f
+	* build/makefiles/dependencies.makefile
+	* build/makefiles/header.makefile
+
+2015-12-09  Kevin Sieck <kevin.sieck@hzg.de>
+
+	Moved TKE computation for different fractions into function.
+
+	* CODE/vdiff.f
+
+2015-12-09  Kevin Sieck <kevin.sieck@hzg.de>
+
+	Moved the computation of exchange coefficients in vdiff.f to
+	subroutines.
+
+	Added:
+
+	* CODE/exchgcoeff_land.f
+	* CODE/exchgcoeff_water.f
+
+	Changed:
+
+	* CODE/vdiff.f
+	* build/makefiles/dependencies.makefile
+	* build/makefiles/header.makefile
+
+2015-11-23  Lars Buntemeyer <lars.buntemeyer@hzg.de>
+
+        Removed obsolete common block.
+        Converted allocatable array to automatic in
+	haloexch.f.
+
+	Deleted:
+
+	* CBS/mo_emgbch.f
+
+	Changed:
+
+	* CODE/haloexch.f
+	* build/makefiles/dependencies.makefile
+	* build/makefiles/header.makefile
+
+2015-11-20  Thomas Raub <thomas.raub@hzg.de>
+
+	Introduced switches for filters of the non-hydrostatic version:
+	DDIFW (diffusion of DWDT),
+	DWP (time filter of DWDT),
+	DWAW (time filter for W),
+	LEXTMODE (external mode damping),
+	LVDAMP (damping of W in upper atmosphere).
+
+	* CBS/comhyd.h
+	* CODE/progec4.f
+	* CODE/cdwdt.f
+	* CODE/final.f
+	* CODE/final.stacy
+	* CODE/final.holger
+	* CODE/medea.f
+	* CODE/cdzdt.f
+
+2015-11-17  Lars Buntemeyer <lars.buntemeyer@hzg.de>
+
+        Converted common blocks to module files.
+        Restructured makefile architecture.
+
+	Deleted:
+
+	* all files in CBS which contained common blocks
+
+	Changed:
+
+	* all files in CODE which now use modules
+
+	Added:
+
+	* CBS/mo_*
+	* CBS/MO_*
+	* build/makefiles/dependencies.makefile
+	* build/makefiles/header.makefile
+
+2015-11-13  Torsten Weber <torsten.weber@hzg.de>
+
+	Boundaries of I and J in the calculation of QJX and QJY were corrected
+
+2015-11-12  Torsten Weber <torsten.weber@hzg.de>
+
+	Indices I and J in the calculation of QJX and QJY were changed
+
+2015-11-12  Kevin Sieck <kevin.sieck@hzg.de>
+
+	Changed the timestep factor for the horizontal diffusion coefficients
+	(AKS2 and AKS4) to old REMO5.8 formulation. This is done to avoid an
+	artificial reduction of the diffusion. This part should be revisited
+	once REMO-NH is running properly, because the change causes problems
+	when REMO is run with different time-steps within one simulation.
+
+	* CODE/gkonst.f
+
+2015-11-10  Torsten Weber <torsten.weber@hzg.de>
+
+	Timestep was included in the calculation of QJX and QJY
+
+2015-11-05  Torsten Weber <torsten.weber@hzg.de>
+
+	Calculation of QJX and QJY was moved to progec4
+
+2015-11-03  Kevin Sieck <kevin.sieck@hzg.de>
+
+	Added switch LDIVDAMP for divergence damping.
+
+	* CBS/comdyn.h
+	* CODE/medea.f
+	* CODE/progexp.f
+
+2015-10-28  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Added switch LHDIFF2 for 2nd order diffusion.
+
+	* CBS/comdyn.h
+	* CODE/ec4org.f
+	* CODE/getalpha.f
+	* CODE/medea.f
+	* CODE/progexp.f
+
+2015-10-21  Torsten Weber <torsten.weber@hzg.de>
+
+	Variables QJX and QJY in restart-file included
+
+2015-10-13  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Bugfix: The parameter BARO was missing in final.holger.
+
+	* CODE/final.holger
+
+2015-10-08  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Mofified the calculation of dates for timesteps less than 1s.
+
+	* CODE/datutc.f
+
+2015-10-07  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Added time level NJ to the copying for the 2D version.
+
+	* CODE/remo2d.f
+
+2015-10-05  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Bugfix in the lateral boundary treatment. The alpha for U and V
+	wind components were not computed correctly at the boundaries.
+	This bug has no effect, due to the formulation of the lateral
+	boundary relaxation.
+
+	* CODE/getalpha.f
+
+2015-10-05  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Introduced a 2D verison of REMO. The implementation is rather
+	copying the center y-line into all other y-lines. This version
+	is not suitable to test the advection scheme itself!
+
+	Added:
+
+	* CODE/remo2d.f
+
+2015-09-21  Torsten Weber <torsten.weber@hzg.de>
+
+	Fixed some bugs of vertically integrated moisture transport (QJX,QJY)
+
+2015-09-15  Torsten Weber <torsten.weber@hzg.de>
+
+	Included vertically integrated moisture transport (QJX,QJY)
+
+	Changed:
+
+	* CODE/progexp.f
+
+2015-05-27  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Deleted phyorg1 and phyorg2. Cleaned the code from rain advection.
+
+	Deleted:
+
+	* CODE/phyorg1.f
+	* CODE/phyorg2.f
+
+	Changed:
+
+	* CODE/phyec.f
+	* CODE/lwcond.f
+	* build/makefiles/Makefile_dependencies.txt
+
+
+2015-05-27  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Commented out rain advection and merged phyorg1 and phyorg2
+	into phyorg and deleted restart variables for rain advection.
+
+	Changed:
+
+	* CODE/phyec.f
+	* CODE/phyorg1.f
+	* CODE/phyorg2.f
+	* build/makefiles/Makefile_dependencies.txt
+
+	Added:
+
+	* CODE/phyorg.f
+
+
+2015-05-26  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Fixed a problem with calling haloexch.f by defining an explicit
+	interface for the calling routine. The interface is defined in
+	haloexchorg and passed to the rountines by the include command.
+
+	Added:
+
+	* CBS/haloexchorg
+
+	Changed:
+
+	* CODE/congra.f
+	* CODE/ec4inmi.f
+	* CODE/ecrandas.f
+	* CODE/phyec.f
+	* CODE/progec4.f
+	* CODE/rain_adv.f
+
+
+2015-04-10  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Updated NAG-Compiler makefile and changed a few lines due to
+	warnings from the NAG-Compiler.
+
+	* build/makefiles/templates/Makefile_thunder_nag.txt
+	* CODE/progec4.f
+	* CODE/vbmxber.f
+	* CODE/vdiff.f
+	* CODE/tempmin.f
+	* CODE/ecaccu.f
+
+2015-04-09  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Changed the HPC settings from blizzard to pitbull. And added new
+	test (Test 3) for restarts.
+
+	* jobs/test_remo.ksh
+
+	Deleted:
+
+	* jobs/test_remo_btc.ksh
+
+2015-04-09  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Added a namelist switch into the test script. And defined some test
+	cases.
+
+	* jobs/test_remo.ksh
+
+2015-04-08  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Moved one communication block in phyec because it did not work
+	properly with the LNOHALO switch on .TRUE.
+
+	* CODE/phyec.f
+
+	Deleted obsolete routines:
+
+	* CODE/nearsfc_nh.f
+	* CODE/nearsfcec4.f
+	* CODE/exch_w.f
+	* CODE/exch_dwdt.f
+	* CODE/rsbound.f
+	* CODE/rsboundphyec.f
+	* CODE/exchinmi.f
+	* CODE/updtrachalo.f
+
+2015-04-07  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Changed the communication that only one communication routine
+	"haloexch" is used instead of eight.
+	Moved the communication of rsboundphyec from progec4 to phyec.
+
+	Newly added:
+	* CODE/haloexch.f
+	* CODE/putbuf.f
+	* CODE/getbuf.f
+
+	Changed:
+	* CODE/ec4inmi.f
+	* CODE/progec4.f
+	* CODE/phyec.f
+	* CODE/decomp.f
+	* CODE/rain_adv.f
+
+	Obsolete routines:
+	* CODE/nearsfc_nh.f
+	* CODE/nearsfcec4.f
+	* CODE/exch_w.f
+	* CODE/exch_dwdt.f
+	* CODE/rsbound.f
+	* CODE/rsboundphyec.f
+	* CODE/exchinmi.f
+	* CODE/updtrachalo.f
+
+2015-04-01  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Changed the calculation of the alpha term for the boundary relaxation
+	so that it is not called every time step. The calculation is now done
+	in getalpha and instead of the array rmy alphabound is passed with
+	the actual alpha values.
+
+	Changed:
+	* CODE/ec4inmi.f
+	* CODE/ec4org.f
+	* CODE/eckont.f
+	* CODE/ecrandas.f
+	* CODE/ectied.f
+	* CODE/exrandass2.f
+	* CODE/phyec.f
+	* CODE/progec4.f
+
+	Added:
+	* CODE/getalpha.f
+
+2015-03-30  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Included external mode substraction for dwdt in the
+	non-hydrostatic part. Moved call exch_dwdt from progec4 to cdwdt.
+	Included a vertical damping of dwdt (needs to be checked).
+	INcluded a switch for the external mode in progec4.
+
+	* CODE/progec4.f
+	* CODE/cdwdt.f
+
+	Added three alternative versions for send2, writec4 and ec4org to
+	do time-step output in the f-file.
+
+	* CODE/writec4.sek
+	* CODE/send2.sek
+	* CODE/ec4org.sek
+
+2015-03-24  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Added IMPLICIT NONE to non-hydrostatic part.
+
+	* CODE/cdwdt.f
+	* CODE/cdwdt2.f
+	* CODE/cdzdt.f
+	* CODE/final.f
+	* CODE/final.stacy
+	* CODE/final.holger
+	* CODE/adv_kev.f
+	* CODE/adv_holger.f
+	* CODE/adv.f
+
+2015-03-23  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Included external mode calculation for w in the non-hydrostatic part.
+	Moved call for exch_w from progec4 to cdzdt.
+
+	* CBS/comhyd.h
+	* CODE/cdzdt.f
+	* CODE/final.f
+	* CODE/progec4.f
+
+2015-03-23  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Added further comments to the non-hydrostatic parts
+
+	* CODE/cdwdt.f
+	* CODE/cdwdt2.f
+	* CODE/cdzdt.f
+	* CODE/final.f
+	* CODE/progec4.f
+	* CODE/final.stacy
+	* CODE/final.holger
+	* CODE/adv_kev.f
+	* CODE/adv_holger.f
+	* CODE/adv.f
+	* CODE/nearsfc_nh.f
+
+2015-03-23  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Added some comments to final.
+
+	* CODE/final.f
+	* CODE/final.holger
+	* CODE/final.stacy
+
+	Alternative horizontal advection of non-hydrostatic parameters
+	implemented.
+
+	* CODE/adv_kev.f
+	* CODE/adv_holger.f
+	* CODE/adv.f
+
+2015-03-05  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Code cleaned. Updated final.stacy.
+
+	* CODE/cdwdt.f
+	* CODE/cdwdt2.f
+	* CODE/cdzdt.f
+	* CODE/final.f
+	* CODE/progec4.f
+	* CODE/final.stacy
+
+2015-03-02  Lars Buntemeyer <lars.buntemeyer@hzg.de>
+
+        All implicit declarations in *.f and includes removed.
+        Removed call to GWDRAG due to incosistent argument bindings.
+
+	* CODE/*.f
+	* CBS/*
+
+2015-02-10  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Changed values for ZRHSC, ZRTC and ZRTL in lwcond.f
+	back to 0.7. This is more suitable for coarse resolution.
+
+	* CODE/lwcond.f
+
+2015-01-21  Lars Buntemeyer <lars.buntemeyer@hzg.de>
+
+        Added fortran 90 version matching mostly the ICON programming
+        standard. Added build options for xlf90, ifort and gfortran.
+
+	* CODE/f90
+	* build/
+
+2014-12-18  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Code cleaning: Unnecessary dummy arguments and variables deleted.
+
+	* CODE/ec4inmi.f
+	* CODE/ec4org.f
+	* CODE/ecaprep.f
+	* CODE/eceprep.f
+	* CODE/geopot.f
+	* CODE/progec4.f
+	* CODE/putec4.f
+	* CODE/writec4.f
+
+2014-12-17  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Fixed bug in PINT Asselin filter.
+
+	* CODE/ecrandas.f
+
+2014-12-16  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Fixed initialization bug for LNOHALO switch.
+
+	* CODE/ec4org.f
+
+2014-12-12  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Fixed a small bug in rain_adv.f that got lost during merge.
+
+	* CODE/rain_adv.f
+
+2014-12-12  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Changed flat iterations (by Jörg Behrens from DKRZ) to make
+	array boundary checks possible in all routines.
+
+	* CODE/lwvd.f
+	* CODE/cemastr.f
+	* CODE/lwu.f
+	* CODE/lwtt.f
+	* CODE/sw2s.f
+	* CODE/lwv.f
+	* CODE/lwvb.f
+	* CODE/lwvn.f
+	* CODE/lwc.f
+
+	Changed the makefiles and dependencies, because the special
+	treatment of the routines with NOBCF90 is not needed anymore.
+
+	* build/makefiles/Makefile_dependencies.txt
+	* build/makefiles/templates/Makefile_blizzard.txt
+	* build/makefiles/templates/Makefile_juqueen.txt
+	* build/makefiles/templates/Makefile_meteo.txt
+	* build/makefiles/templates/Makefile_thunder_gnu.txt
+	* build/makefiles/templates/Makefile_thunder_nag.txt
+	* build/makefiles/templates/Makefile_tornado.txt
+	* build/makefiles/templates/Makefile_ubuntu_laptop.txt
+
+2014-12-11  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Introduced boundary field for QI to prevent spurious cloud ice
+	formation at the boundaries due to the outflow treatment at the
+	boundaries for tracer like variables (T, QI, QW, QD).
+
+	* CODE/ecrandas.f
+	* CODE/ecrandup.f
+	* CODE/progec4.f
+
+2014-12-10  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Fixed boundary, QI initialization and LPHY=.False. bug
+	in hydrostatic REMO version.
+
+	* CODE/ecrandas.f
+	* CODE/ecrandup.f
+	* CODE/gust.f
+	* CODE/progec4.f
+
+2014-12-09  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Fixed small bug in the new calculation of the forecast time.
+
+	* CODE/ec4org.f
+
+	Changed the ubuntu makefile to more extensive checks.
+
+	* build/makefiles/templates/Makefile_ubuntu_laptop.txt
+
+2014-12-05 Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Changed communication of W and DWDT in progec4.f to a more
+	understandable version.
+
+	* CODE/progec4.f
+	* CODE/exch_w.f
+	* CODE/exch_dwdt.f
+
+2014-12-05 Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Bugfix of boundary outflow condition treatment.
+	In case of inflow conditions wrong values of tracer like
+	variables (e.g. temperature, humidity) where prescribed at the
+	boundaries because ZZMY does not give the value 1 in the calculation.
+	This is now set explicitely.
+
+	* CODE/ecrandas.f : Some code has been moved or deleted to make the
+	                    general structure clearer.
+
+2014-12-04 Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Moved adv.f from progec4.f to cdzdt.f to be consistent with the
+	cdwdt.f formulation.
+
+	* CODE/adv.f
+	* CODE/progec4.f
+	* CODE/cdzdt.f
+	* CODE/cdwdt.f
+
+2014-11-28 Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Changed compiler options for ubuntu_laptops to improve debugging
+
+	* build/makefiles/templates/Makefile_ubuntu_laptop.txt
+
+2014-11-28 Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Bugfix in gust.f for runs with LPHY = .FALSE.
+	FIxed typo in sikor.f
+
+	* CODE/gust.f
+	* CODE/sikor.f
+
+2014-11-28 Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Bugfix of PINT in final.f
+
+	* CODE/final.f
+
+2014-11-28 Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Fixed restarts: The in initialization of QI(:,:,:,NE) was missing.
+	Initialization has been implemented into ecrandup (similar to QW).
+
+	* CODE/progec4.f
+	* CODE/ecrandup.f
+
+2014-11-24  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Added fist version of REMO test script.
+
+	* jobs/test_remo.ksh
+
+2014-11-24  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Changed Makfile for ubuntu to add checks for "MULCF90" files.
+
+	* build/makefiles/templates/Makefile_ubuntu_laptop.txt
+
+2014-11-14 Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Put bugfix for final.f in final.holger.
+	Added Initialization handling of dwdt by Holger.
+
+	* CODE/final.f
+	* CODE/progec4.f
+
+2014-11-13 Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Bugfix in final.f.
+	Added Holgers and Stacys formulation of final.f as extra files.
+
+	* CODE/final.f
+	* CODE/final.holger
+	* CODE/final.stacy
+
+2014-11-12 Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Changed final.f to Holgers version.
+	Changed field boundaries in advection calculation.
+
+	* CODE/final.f
+	* CODE/adv.f
+
+2014-11-12 Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Introduced LHYDRO switch to switch off non-hydrostatic extension.
+	Cleaned rain advection code.
+
+	* CODE/progec4.f
+	* CODE/phyec.f
+	* CODE/rain_adv.f
+
+2014-11-10 Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Several bug fixex concerning the variable ETAS.
+
+	* CODE/progexp.f
+	Corrected loop indecies.
+
+	* CODE/ec4inmi.f
+	* CODE/ec4org.f
+	* CODE/progec4.f
+	Changed inconsistent and corrected wrong subroutine
+	calls.
+
+2014-11-03  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Changed print of forecast time, because of integer overflow.
+
+	* CODE/ec4org.f
+
+2014-10-23  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Fixed bug in rainadvection with double counting of ZQDTS
+
+	* CODE/phyec.f
+
+2014-09-18  Claas Teichmann <claas.teichmann@mpimet.mpg.de>
+
+	Adapting domain to EURO-CORDEX.
+
+	* CBS/param.h: Modified.
+
+2014-09-18  Claas Teichmann <claas.teichmann@mpimet.mpg.de>
+
+	Changed standard domain back to CORDEX Europe 0.44
+	Merged missing changes from remo_mpi/trunk into this branch.
+
+	* CBS/param.h: Modified.
+
+2014-09-18  Kevin Sieck <kevin.sieck@mpimet.mpg.de> Claas Teichmann <claas.teichmann@mpimet.mpg.de>
+
+	Adding a check for very small temperatures.
+	A warning is printed when temperature reaches values below 150K.
+	REMO stops, when values go below 100K (this is also beyond a lookup-table).
+
+	* CODE/ec4org.f
+	* build/makefiles/Makefile_dependencies.txt: Modified.
+	Added tempmin
+
+	* CODE/tempmin.f:Added
+	Checking the temperature
+
+	* CBS/COMGTS
+	* CBS/param.h: Modified
+	Adapted to the EURO-CORDEX setup
+
+2014-05-08  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Changed standard resolution and domain to CORDEX Europe 0.44
+
+	* CBS/param.h
+	* jobs/test_blizzard_044.ksh
+
+2014-05-08  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Replaced last GOTO statements.
+
+	* CODE/ecaprep.f
+	* CODE/ecrprep.f
+
+2014-05-08  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Code cleaning by deleting commented code lines and replacing
+	continuation line characters by an '&'.
+	No list because almost all routines were touched.
+
+2014-05-06  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Bugfix in phyorg1.f
+
+	* CODE/phyorg1.f
+
+2014-05-06  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Code cleaning according to ftnchek.
+	Not used variables, labels and dummy arguments were removed.
+	Deleted trailing white spaces in common blocks.
+
+	* CBS/COMCON
+	* CBS/COMCUMF
+	* CBS/COMGTS
+	* CBS/COMPH1
+	* CBS/COMPH2
+	* CBS/COMRAD1
+	* CBS/COMRAD2
+	* CBS/COMVEG
+	* CBS/YOMAER
+	* CBS/YOMCFC
+	* CBS/YOMCST
+	* CBS/YOMLW
+	* CBS/YOMRDI
+	* CBS/YOMRDU
+	* CBS/YOMSW
+	* CBS/YOTLUC
+	* CBS/comdyn.h
+	* CBS/comecphy.h
+	* CBS/comnmi.h
+	* CBS/corg.h
+	* CBS/emgbri.h
+	* CBS/grid.h
+	* CBS/higkon.h
+	* CBS/org.h
+	* CBS/parkon.h
+	* CBS/phykon.h
+	* CBS/progchk.h
+	* CBS/sumfel.h
+	* CBS/unitnr.h
+	* CODE/aolwu.f
+	* CODE/aoradint.f
+	* CODE/aoradlsw.f
+	* CODE/aosw2s.f
+	* CODE/cecall.f
+	* CODE/ec4org.f
+	* CODE/gkonst.f
+	* CODE/init.f
+	* CODE/phyorg1.f
+
+2014-04-30  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Code cleaning according to NAG-Compiler on thunder.
+	Not used variables, labels and dummy arguments were removed.
+
+	* CODE/psredber.f
+	* CODE/reado3.f
+	* CODE/shadvec.f
+	* CODE/rain_adv.f
+	* CODE/phyorg1.f
+	* CODE/iniphy.f
+	* CODE/suaerx.f
+	* CODE/progexp.f
+	* CODE/lwcond.f
+	* CODE/ectied.f
+	* CODE/konst.f
+	* CODE/decomp.f
+	* CODE/ceentr.f
+	* CODE/datutc.f
+	* CODE/ec4inmi.f
+	* CODE/phyorg2.f
+	* CODE/prepbod.f
+	* CODE/readbod.f
+	* CODE/inicon.f
+	* CODE/iniluc.f
+	* CODE/aoradint.f
+	* CODE/phyec.f
+	* CODE/skintem.f
+	* CODE/ecrandas.f
+	* CODE/radint.f
+	* CODE/vdiff.f
+	* CODE/prepaer.f
+	* CODE/cedlfs.f
+	* CODE/atmice.f
+	* CODE/readaer.f
+	* CODE/prepo3.f
+	* CODE/surf.f
+	* CODE/writec4.f
+	* CODE/radlsw.f
+	* CODE/cebasmc.f
+	* CODE/inboxs.f
+	* CODE/gwdrag.f
+	* CODE/prerad.f
+	* CODE/asurf.f
+	* CODE/ecaccu.f
+	* CODE/aorad.f
+	* CODE/emabort.f
+	* CODE/rad.f
+	* CODE/radheat.f
+	* CODE/sikor.f
+
+2014-04-29  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Added Makefile template for NAG-Compiler on thunder.
+
+	* build/makefiles/Makefile
+	* build/makefiles/templates/Makefile_thunder_nag.txt
+	* build/Makefile
+
+2014-04-28  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	2nd bugfix in tagmit.f. Results are now binary identical
+	to trunk version!
+
+	* CODE/tagmit.f
+
+2014-04-25  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Bugfix in tagmit.f.
+
+	* CODE/tagmit.f
+
+2014-04-22  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Twelfth part of code cleaning:
+	Not used variables, labels and dummy arguments (according
+	to gfortran compiler) removed. GOTOs replaced.
+
+	* CODE/collectdata.f
+	* CODE/decomp.f
+	* CODE/exchinmi.f
+	* CODE/exrandass1.f
+	* CODE/exrandass2.f
+	* CODE/exrandasssetup.f
+	* CODE/nearsfcec4.f
+	* CODE/pallreducer.f
+	* CODE/phyec.f
+	* CODE/precvi.f
+	* CODE/precvl.f
+	* CODE/precvr.f
+	* CODE/precvra.f
+	* CODE/preducer.f
+	* CODE/preducerr.f
+	* CODE/psendall2i.f
+	* CODE/psendalli.f
+	* CODE/psendallr.f
+	* CODE/psendl.f
+	* CODE/psendr.f
+	* CODE/psendrs.f
+	* CODE/pstop.f
+	* CODE/ptest.f
+	* CODE/pwait.f
+	* CODE/rain_adv.f
+	* CODE/rsbound.f
+	* CODE/rsboundphyec.f
+	* CODE/sendsubgrid.f
+	* CODE/shadvec.f
+	* CODE/solve3d.f
+	* CODE/ssgb.f
+	* CODE/trapo.f
+	* CODE/updtrachalo.f
+
+2014-04-22  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Eleventh part of code cleaning:
+	Not used variables, labels and dummy arguments (according
+	to gfortran compiler) removed. GOTOs replaced.
+
+	* CODE/vdiff.f
+
+2014-04-16  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Tenth part of code cleaning:
+	Not used variables, labels and dummy arguments (according
+	to gfortran compiler) removed. GOTOs replaced.
+
+	* CODE/phyec.f
+	* CODE/phyorg2.f
+	* CODE/readaer.f
+	* CODE/readgts.f
+	* CODE/reado3.f
+	* CODE/skintem.f
+	* CODE/soilchange.f
+	* CODE/soildef.f
+	* CODE/soilhyd.f
+	* CODE/solang.f
+	* CODE/suaerx.f
+	* CODE/suradi.f
+	* CODE/suradis.f
+	* CODE/surf.f
+	* CODE/sw.f
+	* CODE/sw1s.f
+	* CODE/sw2s.f
+	* CODE/swde.f
+	* CODE/swr.f
+	* CODE/swtt.f
+	* CODE/swu.f
+
+2014-04-14  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Ninth part of code cleaning:
+	Not used variables, labels and dummy arguments (according
+	to gfortran compiler) removed. GOTOs replaced.
+
+	* CODE/aorad.f
+	* CODE/o3clim.f
+	* CODE/orbit.f
+	* CODE/ozone.f
+	* CODE/phydyn.f
+	* CODE/phyec.f
+	* CODE/phyorg1.f
+	* CODE/phyorg2.f
+	* CODE/prepaer.f
+	* CODE/prepgrg.f
+	* CODE/prepo3.f
+	* CODE/prerad.f
+	* CODE/pres.f
+	* CODE/presf.f
+	* CODE/rad.f
+	* CODE/radheat.f
+	* CODE/radint.f
+	* CODE/radlsw.f
+
+2014-04-14  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Eighth part of code cleaning:
+	Not used variables, labels and dummy arguments (according
+	to gfortran compiler) removed. GOTOs replaced.
+	Changed the thunder_gnu makefile, because some routines
+	were not checked properly.
+
+	* CODE/inicon.f
+	* CODE/iniluc.f
+	* CODE/iniphy.f
+	* CODE/inirad.f
+	* CODE/init.f
+	* CODE/legtri.f
+	* CODE/lw.f
+	* CODE/lwb.f
+	* CODE/lwc.f
+	* CODE/lwcond.f
+	* CODE/lwtt.f
+	* CODE/lwu.f
+	* CODE/lwv.f
+	* CODE/lwvb.f
+	* CODE/lwvd.f
+	* CODE/lwvn.f
+	* CODE/phyec.f
+	* build/makefiles/templates/Makefile_thunder_gnu.txt
+
+2014-04-10  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Seventh part of code cleaning:
+	Not used variables, labels and dummy arguments (according
+	to gfortran compiler) removed. GOTOs replaced.
+
+	* CODE/ceasc.f
+	* CODE/ceddraf.f
+	* CODE/cedlfs.f
+	* CODE/cedtdq.f
+	* CODE/cedudv.f
+	* CODE/ceentr.f
+	* CODE/ceflx.f
+	* CODE/ceini.f
+	* CODE/cemastr.f
+	* CODE/copyre.f
+	* CODE/dynphy.f
+	* CODE/ec4org.f
+	* CODE/ecaccu.f
+	* CODE/ecaerdi.f
+	* CODE/ecaeros.f
+	* CODE/eckont.f
+	* CODE/ectied.f
+	* CODE/geopec.f
+	* CODE/gwdrag.f
+
+2014-04-09  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Sixth part of code cleaning:
+	Not used variables, labels and dummy arguments (according
+	to gfortran compiler) removed. GOTOs replaced.
+
+	* CODE/aolw.f
+	* CODE/aolwu.f
+	* CODE/aorad.f
+	* CODE/aoradint.f
+	* CODE/aoradlsw.f
+	* CODE/aosw.f
+	* CODE/aosw1s.f
+	* CODE/aosw2s.f
+	* CODE/aoswr.f
+	* CODE/ascheme.f
+	* CODE/asurf.f
+	* CODE/atmice.f
+	* CODE/ceadjtq.f
+	* CODE/ceasc.f
+	* CODE/cebase.f
+	* CODE/cebasmc.f
+	* CODE/cecall.f
+	* CODE/cemastr.f
+	* CODE/decomp.f
+	* CODE/phyorg1.f
+	* CODE/surf.f
+	* CODE/tagmit.f
+	* CODE/vbmxber.f
+	* CODE/writec4.f
+	* CODE/writegb.f
+
+2014-04-03  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Fifth part of code cleaning:
+	Not used variables, labels and dummy arguments (according
+	to gfortran compiler) removed. GOTOs replaced.
+
+	* CODE/passko.f
+	* CODE/phstoph.f
+	* CODE/platte.f
+	* CODE/prcv.f
+	* CODE/progec4.f
+	* CODE/progexp.f
+	* CODE/prrv.f
+	* CODE/prtlog.f
+	* CODE/psredber.f
+	* CODE/pstonn.f
+	* CODE/readbod.f
+	* CODE/remorg.f
+	* CODE/rlstorl.f
+	* CODE/scalgb.f
+	* CODE/send.f
+	* CODE/send2.f
+	* CODE/setia.f
+	* CODE/setra.f
+	* CODE/sikor.f
+
+2014-04-03  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Fourth part of code cleaning:
+	Not used variables, labels and dummy arguments (according
+	to gfortran compiler) removed. GOTOs replaced.
+
+	* CODE/makegdb.f
+	* CODE/makepdb.f
+	* CODE/makepn.f
+	* CODE/makepnz.f
+	* CODE/medea.f
+	* CODE/monmit.f
+	* CODE/nearec4.f
+	* CODE/pass.f
+
+2014-04-02  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Third part of code cleaning:
+	Not used variables, labels and dummy arguments (according
+	to gfortran compiler) removed. GOTOs replaced.
+
+	* CBS/parorg.h
+	* CODE/datutc.f
+	* CODE/decomp.f
+	* CODE/gaelko.f
+	* CODE/gauss.f
+	* CODE/geopot.f
+	* CODE/getakbk.f
+	* CODE/getd.f
+	* CODE/getloc.f
+	* CODE/gkonst.f
+	* CODE/gnzfld.f
+	* CODE/gridchk.f
+	* CODE/gust.f
+	* CODE/horint.f
+	* CODE/inboxs.f
+	* CODE/inizr.f
+	* CODE/lench.f
+
+2014-04-01  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Second part of code cleaning:
+	Not used variables, labels and dummy arguments (according
+	to gfortran compiler) removed. GOTOs replaced.
+
+	* CODE/adjkake.f
+	* CODE/bubbsort.f
+	* CODE/closezr.f
+	* CODE/congra.f
+	* CODE/datein.f
+	* CODE/datutc.f
+	* CODE/dcomplt.f
+	* CODE/ec4inmi.f
+	* CODE/ec4org.f
+	* CODE/ecaprep.f
+	* CODE/eceprep.f
+	* CODE/ecrandas.f
+	* CODE/ecrandup.f
+	* CODE/ecrprep.f
+	* CODE/fft.f
+	* CODE/filter.f
+	* CODE/filter4.f
+	* CODE/prepbod.f
+	* CODE/priv.f
+
+2014-04-01  Claas Teichmann  <claas.teichmann@zmaw.de>
+
+	Reverted changes, Christopher made to have sub-hourly output.
+	Reverting r996
+	svn merge -c -r996 ^/remo_mpi/branches/remo2011_mpi_nh
+
+	* CBS/unitzr.h: Modified.
+	inserted space.
+
+	* CBS/org.h: Modified.
+	removed LWRITEZ
+
+	* CBS/corg.h: Modified.
+	removed minutes in YAKDAT1 and YAKDAT2
+
+	* CODE/monmit.f: Modified.
+	removed minutes from YYYAKT, removed debug statement
+
+	* CODE/vbmxber.f: Modified.
+	kept Stacys debug-statements commented out
+
+	* CODE/makepnz.f: Modified
+	removed minutes in YAKDAT1 and YAKDAT2
+
+	* CODE/medea.f: Modified
+	back to hours for NHEAA and NHDEA and NHDMXN
+
+	* CODE/datutc.f: Modified.
+	removed minutes
+
+	* CODE/tagmit.f: Modified
+	removed minutes from YYYAKT, removed comments
+
+	* CODE/ec4inmi.f: Modified
+	remove LZWRITZ
+
+	* CODE/makepdb.f: Modified
+	removed minutes
+
+	* CODE/eceprep.f: Modified
+	removed YTYP 'Z'
+
+	* CODE/remorg.f: Modified
+	removed LWRITEZ
+
+	* CODE/putec4.f: Modified
+	removed check for high frequency output
+
+	* CODE/closezr.f: Modified
+	removed commented out debug statement
+
+	* CODE/dataus.f: Modified
+	removed commented out debug statement
+
+	* CODE/writec4.f: Modified
+	removed YTYP Z
+
+	* CODE/ec4org.f: Modified
+	removed sub-hourly output, ECEPREP('Z',..) etc.
+	commented out debug statement (WRITE..), write vbmax..
+	resolved conflict
+
+	FIXME: Was ist APRLSAV? Das ist nach Christophers Änderungen neu hinzugekommen.
+
+	* CODE/inizr.f: Modified
+	removed debug statement
+
+	* CODE/datchk.f: Modified
+	removing minutes is not necessary anymore when checking grb-files
+
+	* CODE/makepn.f: Modified
+	removed minutes
+
+	* CODE/ecaccu.f: Modified.
+	removed minutes and related variables, solved conflict
+
+	* CODE/writegb.f: Modified
+	removed minutes and debugging
+
+	* jobs/
+	* jobs/remo2012_nh_mpi_test_128cpu
+	* jobs/remo2012_nh_mpi_test_1cpu
+	* jobs/check.txt
+	* jobs/check_e_files.sh
+	* jobs/INPUT
+	* jobs/YUAUFTR
+	* jobs/remo2012_nh_mpi_test: Unchanged
+	Keeping all files that would have been deleted in this directory.
+
+2014-03-28  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	First part of code cleaning:
+	Not used variables, labels and dummy arguments (according
+	to gfortran compiler) removed.
+
+	* CODE/dataus.f
+	* CODE/datutc.f
+	* CODE/ec4inmi.f
+	* CODE/fft.f
+	* CODE/gkonst.f
+	* CODE/makegdb.f
+	* CODE/medea.f
+	* CODE/minvlap.f
+	* CODE/monmit.f
+	* CODE/pass.f
+	* CODE/phstoph.f
+	* CODE/writec4.f
+
+2014-03-26  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Incorporated Staceys/Jonis "nohalo" calculation.
+	In case of rain advection the halos will be calculated
+	because they are needed.
+
+	* CODE/phyec.f
+
+	Moved the LADVPR switch from COMCON into org.h because
+	COMCON is only for physical constants.
+	Due to the change the switch has to passed to each routine
+	after phyec.f
+
+	* CBS/COMCON
+	* CBS/org.h
+	* CODE/cecall.f
+	* CODE/ceflx.f
+	* CODE/cemastr.f
+	* CODE/lwcond.f
+	* CODE/phyec.f
+	* CODE/phyorg1.f
+
+2014-03-24 Bastian Eggert <bastian.eggert@hzg.de>
+
+	Changes done by Stacy in final.f
+	this should fix the reproducibility problem
+
+2014-03-19  Claas Teichmann  <claas.teichmann@zmaw.de>
+
+	Added the possibility to write out RPRAC calculated in lwcond.f
+	We included it similar to writing out of ACLCAC.
+	Important changes are marked with CCTBEKS
+
+	* CBS/corg.h: Modified.
+	NZMXVA, NZMXVF, NZMXVT, NZMXVD increased due to bigger DATA fields
+	in varn2.f (counting also empty fields)
+
+	* CBS/emgbch.h: Modified.
+	Increased NFLDEM due to entry in ecmgbdt.f
+
+	* CODE/medea.f: Modified.
+	Increased to DATA block lengths of varn2.f (without counting empty fields)
+	e.g., NZVDD, NZVTD, NZVMD, NZVND
+
+	* CODE/lwcond.f: Modified.
+	Added summing up and keeping of RPRAC
+
+	* CODE/ecaccu.f: Modified.
+	Added RPRAC multiplied with FAC (similar to ACLCAC)
+
+	* CODE/ec4inmi.f
+	* CODE/ec4org.f
+	* CODE/ecaprep.f
+	* CODE/eceprep.f
+	* CODE/ecmgbdt.f
+	* CODE/phyec.f
+	* CODE/phyorg1.f
+	* CODE/progec4.f
+	* CODE/putec4.f
+	* CODE/puteca.f
+	* CODE/varn.f
+	* CODE/varn2.f
+	* CODE/writec4.f: Modified.
+	Mainly added RPRAC to function calls and definition sections.
+	Added if-clauses in puteca.f, putec4.f
+
+2014-03-03  Claas Teichmann <claas.teichmann@mpimet.mpg.de>
+
+	* CBS/COMGTS
+
+	Changed years: until 2101
+
+2014-02-20  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Changed DOUBLE PRECISION declarations to REAL
+
+	* CODE/rain_adv.f
+
+	Changed compiler options for rain_adv.f back to STDCF90
+	(see also changes from 2014-02-05!)
+	The former constructions caused different precision handling
+	on different machines. Now a it should work similar to all
+	other subroutines.
+
+2014-02-20  Claas Teichmann <claas.teichmann@mpimet.mpg.de>
+
+	Fixed make clean_all
+
+	* build/Makefile
+
+	Added deletion of .lst-files
+
+2014-02-05  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Fixed bug of uninitialized field PADVE in first time step
+
+	* CODE/ecaprep.f
+
+	Changed confusing declaration of local fields
+
+	* CODE/rain_adv.f
+
+	Changed compiler options for rain_adv.f to SGLCF90
+	The old declaration caused chrashes on other computers than
+	IBM (due to the special IBM treatment of the -qautodbl=dbl4
+	option).
+
+	* build/makefiles/Makefile_dependencies.txt
+
+	Minor bugfix in thunder Makefile
+
+	* build/makefiles/templates/Makefile_thunder_gnu.txt
+
+2014-02-03  Kevin Sieck <kevin.sieck@mpimet.mpg.de>
+
+	Alligned COMMON blocks
+
+	* CBS/COMCUMF
+	* CBS/COMGTS
+	* CBS/YOMLW
+	* CBS/comdyn.h
+	* CBS/higkon.h
+	* CBS/org.h
+	* CBS/param.h
+	* CBS/progchk.h
+
+	Added Makefile for thunder (can be used on MPI-PCs as well)
+
+	* build/makefiles/templates/Makefile_thunder_gnu.txt
+
+2012-10-18  Kevin Sieck <kevin.sieck@zmaw.de>
+
+	Modified Makefile templates to enable debug mode
+	on ubuntu laptops
+
+	* build/makefiles/templates/Makefile_ubuntu_laptop.txt
+	* build/makefiles/templates/Makefile_blizzard.txt
+	* build/makefiles/Makefile_dependencies.txt
+
+2012-06-26  Claas Teichmann  <claas.teichmann@zmaw.de>
+
+	Adapting Makefile-structure from
+	remo_mpi/branches/remo2008_mpi_tracer_merge_aero_and_chem/build
+
+	Makefiles are created. One single dependencies file on all machines.
+
+	* build/Makefile
+	* build/qm: Moved.
+	Moved to build/reference/
+
+	* build/makefiles
+	* build/makefiles/templates/Makefile_ubuntu_laptop.txt
+	* build/makefiles/templates/Makefile_blizzard.txt
+	* build/makefiles/Makefile_dependencies.txt: Added, Modified.
+
+	* build/makefiles/Makefile_meteo: Removed.
+	(it is created by "make meteo")
